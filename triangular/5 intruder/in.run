@@ -1,0 +1,68 @@
+# Five large disc-shaped intruders dropping from a height onto a 2d bed of disc particles (d=0.5)
+# Diameter of the intruders = 2.54
+# Height of the intruders from the particle bed = 5.0
+# Density of the intruders = 5 different values
+
+dimension	2
+atom_style	sphere
+boundary	f fm p
+newton		off
+comm_modify	vel yes
+
+read_data	data.final
+
+neighbor	0.2 bin
+neigh_modify	delay 0
+
+group		remaining type 1
+group		intruder1 type 2
+group		intruder2 type 3
+group		intruder3 type 4
+group		intruder4 type 5
+group		intruder5 type 6
+set 		type 1 density/disc 1.0	# The granular bed of particles
+set 		type 2 density/disc 200	# intruders
+set 		type 3 density/disc 200
+set 		type 4 density/disc 200
+set 		type 5 density/disc 200
+set 		type 6 density/disc 200
+# densities are assigned to the intruders (D = 1)
+
+
+pair_style      gran/hertz/history 2.0e6 2.456e6 1000.0 1000.0 0.5 1
+pair_coeff	* *
+
+# timestep	0.00001
+timestep	0.00005
+
+fix     1 remaining nve/sphere disc
+fix		2 all gravity 1.0 spherical 0.0 -180.0
+fix     4 intruder1 rigid/nve single
+fix     5 intruder2 rigid/nve single
+fix     6 intruder3 rigid/nve single
+fix     7 intruder4 rigid/nve single
+fix     8 intruder5 rigid/nve single
+
+fix             xwalls all wall/gran hertz/history 2.0e6 2.456e6 1000.0 1000.0 0.5 1 &
+                xplane -41 41
+fix		ywalls all wall/gran hertz/history 2.0e6 2.456e6 1000.0 1000.0 0.5 1 &
+		yplane 0 NULL
+
+dump            4a all custom 1000 dump.all id type x y vx vy fx fy omegaz diameter # Change the frequency of output according to the memory consumed by this file 
+# dump            4b intruder custom 10000 dump.position id x y
+
+
+compute 	101 all stress/atom NULL pair
+compute 	102 all contact/atom
+# dump        133 intruder1 custom 100 dump.intruder id type x y vx vy fx fy omegaz tqz c_101[1] c_101[2] c_101[4] c_102  
+
+
+fix         3 all enforce2d
+compute		1 all erotate/sphere
+thermo_style	custom step atoms ke c_1 vol
+thermo		1000
+thermo_modify	lost ignore norm no
+compute_modify	thermo_temp dynamic/dof yes
+
+run		10000000
+write_data	date.final1
