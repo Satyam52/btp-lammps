@@ -1,0 +1,18 @@
+LAMMPS (3 Mar 2020)
+# Five large disc-shaped intruders dropping from a height onto a 2d bed of disc particles (d=0.5)
+# Diameter of the intruders = 2.54
+# Height of the intruders from the particle bed = 5.0
+# Density of the intruders = 5 different values
+
+dimension	2
+atom_style	sphere
+boundary	f fm p
+newton		off
+comm_modify	vel yes
+
+read_data	start.final
+  orthogonal box = (-41 0 -0.25) to (41 200 0.25)
+  2 by 3 by 1 MPI processor grid
+  reading atoms ...
+ERROR on proc 0: Invalid density in Atoms section of data file (src/atom_vec_sphere.cpp:976)
+Last command: read_data	start.final

@@ -49,7 +49,11 @@ fix		ywalls all wall/gran hertz/history 2.0e6 2.456e6 1000.0 1000.0 0.5 1 &
 		yplane 0 NULL
 
 dump            4a all custom 1000 dump.all id type x y vx vy fx fy omegaz diameter # Change the frequency of output according to the memory consumed by this file 
-# dump            4b intruder custom 10000 dump.position id x y
+dump            4b intruder1 custom 10000 dump1.position id type x y
+dump            5b intruder2 custom 10000 dump2.position id type x y 
+dump            6b intruder3 custom 10000 dump3.position id type x y 
+dump            7b intruder4 custom 10000 dump4.position id type x y 
+dump            8b intruder5 custom 10000 dump5.position id type x y
 
 
 compute 	101 all stress/atom NULL pair
